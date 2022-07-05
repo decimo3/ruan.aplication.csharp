@@ -1,11 +1,11 @@
 using MySql.Data.MySqlClient;
 namespace basedados
 {
-    class mariadb
+    class MyBanco
     {
         private MySqlConnection conexao;
-        private MysqlAdapter cursor;
-        public bool conectar()
+        private MySqlDataAdapter cursor;
+        public MyBanco()
         {
             conexao = new MySqlConnection("server=127.0.0.1;uid=root;pwd=123456789;database=aplication");
             try
@@ -20,10 +20,11 @@ namespace basedados
             if (conexao.State == System.Data.ConnectionState.Open)
             {
                 System.Console.WriteLine("A conexão foi estabelecida com sucesso!");
-                return true;
             }
-            System.Console.WriteLine("A conexão fracassou com sucesso!");
-            return false;
+            else
+            {
+                System.Console.WriteLine("A conexão fracassou com sucesso!");
+            }
         }
     }
 }
