@@ -4,19 +4,16 @@ namespace basedados
     class MyBanco
     {
         private MySqlConnection conexao;
-        private MySqlDataAdapter cursor;
+        private MySqlCommand cursor;
+        public string tabela;
+        public string[] colunas;
+        public string[] valores;
         public MyBanco()
         {
             conexao = new MySqlConnection("server=127.0.0.1;uid=root;pwd=123456789;database=aplication");
-            try
-            {
-                conexao.Open();
-            }
-            catch (System.Exception erro)
-            {
-                System.Console.WriteLine("Erro ao abrir conexão com o servidor MySQL");
-                System.Console.WriteLine(erro.Message.ToString());
-            }
+            cursor = new MySqlCommand();
+            cursor.Connection = conexao;
+            conexao.Open();
             if (conexao.State == System.Data.ConnectionState.Open)
             {
                 System.Console.WriteLine("A conexão foi estabelecida com sucesso!");
@@ -25,6 +22,12 @@ namespace basedados
             {
                 System.Console.WriteLine("A conexão fracassou com sucesso!");
             }
+        }
+        public bool inserir(string instrucao)
+        {
+            cursor.CommandText = instrucao;
+            cursor.ExecuteNonQuery();
+            return true;
         }
     }
 }
