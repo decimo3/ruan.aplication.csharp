@@ -13,11 +13,17 @@ namespace usuario
         {
             if (!Regex.IsMatch(usuario, "[0-9A-z]{5,16}")) return false;
             if (!Regex.IsMatch(palavra, "[0-9A-z]{8,32}")) return false;
-            banco.inserir($"INSERT INTO usuario (usuario, palavra) VALUES ('{usuario}','{palavra}');");
+            banco.tabela = "usuario";
+            banco.colunas = "usuario, palavra";
+            banco.valores = $"'{usuario}', '{palavra}'";
+            banco.inserir();
             System.Console.WriteLine("Usuario criado com sucesso!");
             return true;
         }
-        public bool buscarUsuario(string usuario) { return true; }
+        public bool buscarUsuario(string usuario)
+        {
+            return false;
+        }
         public bool logarUsuario() { return true; }
     }
 }
