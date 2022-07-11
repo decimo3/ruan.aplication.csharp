@@ -1,5 +1,5 @@
 using basedados;
-using System.Text.RegularExpressions;
+using Verificador;
 namespace usuario
 {
     class ContaUsuario
@@ -11,19 +11,38 @@ namespace usuario
         }
         public bool criarUsuario(string usuario, string palavra)
         {
-            if (!Regex.IsMatch(usuario, "[0-9A-z]{5,16}")) return false;
-            if (!Regex.IsMatch(palavra, "[0-9A-z]{8,32}")) return false;
-            banco.tabela = "usuario";
-            banco.colunas = "usuario, palavra";
-            banco.valores = $"'{usuario}', '{palavra}'";
-            banco.inserir();
-            System.Console.WriteLine("Usuario criado com sucesso!");
-            return true;
+            if (!verificarse.validoUsuario(usuario)) return false;
+            if (!verificarse.validoPalavra(palavra)) return false;
+            if (banco.criarUsuario(@usuario, @palavra))
+            {
+                System.Console.WriteLine("Usuario criado com sucesso!");
+                return true;
+            }
+            else
+            {
+                System.Console.WriteLine("Criação do usuario falhou!");
+                return false;
+            }
         }
         public bool buscarUsuario(string usuario)
         {
-            return false;
+            if (!verificarse.validoUsuario(usuario)) return false;
+            if (banco.existeUsuario(usuario))
+            {
+                System.Console.WriteLine($"O usuário {usuario} sim foi encontrado!");
+                return false;
+            }
+            else
+            {
+                System.Console.WriteLine($"O usuário {usuario} não foi encontrado!");
+                return true;
+            }
         }
-        public bool logarUsuario() { return true; }
+        public bool logarUsuario(string usuario, string palavra)
+        {
+            if (!verificarse.validoUsuario(usuario)) return false;
+            if (!verificarse.validoPalavra(palavra)) return false;
+            return true;
+        }
     }
 }

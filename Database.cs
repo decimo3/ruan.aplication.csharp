@@ -5,10 +5,8 @@ namespace basedados
     {
         private MySqlConnection conexao;
         private MySqlCommand cursor;
-        public string tabela;
-        public string colunas;
-        public string valores;
-        public string instrucao;
+        private MySqlDataReader leitor;
+        private string instrucao;
         public MyBanco()
         {
             conexao = new MySqlConnection("server=127.0.0.1;uid=root;pwd=123456789;database=aplication");
@@ -24,19 +22,39 @@ namespace basedados
                 System.Console.WriteLine("A conexão fracassou com sucesso!");
             }
         }
-        public bool inserir()
+        public bool criarUsuario(string usuario, string palavra)
         {
             // INSERT INTO tabela (usuario, palavra) VALUES ('usuario','palavra');
-            instrucao = $"INSERT INTO {tabela} ({colunas}) VALUES ({valores});";
+            instrucao = $"INSERT INTO usuario (usuario, palavra) VALUES ('{usuario}', '{palavra}');";
             cursor.CommandText = instrucao;
             cursor.ExecuteNonQuery();
             return true;
         }
-        public bool buscar(string instrucao)
+        public bool existeUsuario(string usuario)
         {
+            instrucao = $"SELECT usuario FROM usuario WHERE usuario = '{usuario}';";
             cursor.CommandText = instrucao;
-            cursor.ExecuteNonQuery();
+            leitor = cursor.ExecuteReader();
+            while (leitor.Read())
+            {
+                System.Console.WriteLine($"{leitor.GetString(0)}");
+            }
+            leitor.Close();
             return true;
+        }
+        public bool logarUsuario(string usuario, string palavra)
+        {
+            instrucao = $"SELECT usuario FROM usuario WHERE usuario = '{usuario}' AND palavra = '{palavra}'";
+            cursor.CommandText = instrucao;
+            var correspondencias = cursor.ExecuteNonQuery();
+            if (correspondencias == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
