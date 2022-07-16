@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using Verificador;
 namespace basedados
 {
     class MyBanco
@@ -12,10 +13,11 @@ namespace basedados
             conexao = new MySqlConnection("server=127.0.0.1;uid=root;pwd=123456789;database=aplication");
             cursor = new MySqlCommand();
             cursor.Connection = conexao;
+            instrucao = "";
             conexao.Open();
             if (conexao.State == System.Data.ConnectionState.Open)
             {
-                System.Console.WriteLine("A conexão foi estabelecida com sucesso!");
+                System.Console.WriteLine("A conexão estabelecida com sucesso!");
             }
             else
             {
@@ -24,6 +26,8 @@ namespace basedados
         }
         public bool criarUsuario(string usuario, string palavra)
         {
+            if (!verificarse.validoUsuario(usuario)) return false;
+            if (!verificarse.validoPalavra(palavra)) return false;
             // INSERT INTO tabela (usuario, palavra) VALUES ('usuario','palavra');
             instrucao = $"INSERT INTO usuario (usuario, palavra) VALUES ('{usuario}', '{palavra}');";
             cursor.CommandText = instrucao;
@@ -32,29 +36,16 @@ namespace basedados
         }
         public bool existeUsuario(string usuario)
         {
+            if (!verificarse.validoUsuario(usuario)) return false;
             instrucao = $"SELECT usuario FROM usuario WHERE usuario = '{usuario}';";
             cursor.CommandText = instrucao;
-            leitor = cursor.ExecuteReader();
-            while (leitor.Read())
-            {
-                System.Console.WriteLine($"{leitor.GetString(0)}");
-            }
-            leitor.Close();
-            return true;
+            return (cursor.ExecuteNonQuery() == 1) ? true : false;
         }
         public bool logarUsuario(string usuario, string palavra)
         {
             instrucao = $"SELECT usuario FROM usuario WHERE usuario = '{usuario}' AND palavra = '{palavra}'";
             cursor.CommandText = instrucao;
-            var correspondencias = cursor.ExecuteNonQuery();
-            if (correspondencias == 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (cursor.ExecuteNonQuery() == (-1)) ? true : false;
         }
     }
 }

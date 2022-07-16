@@ -13,6 +13,7 @@ namespace usuario
         {
             if (!verificarse.validoUsuario(usuario)) return false;
             if (!verificarse.validoPalavra(palavra)) return false;
+            if (buscarUsuario(usuario)) return false;
             if (banco.criarUsuario(@usuario, @palavra))
             {
                 System.Console.WriteLine("Usuario criado com sucesso!");
