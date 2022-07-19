@@ -1,5 +1,7 @@
 using basedados;
 using Verificador;
+using registros;
+
 namespace usuario
 {
     class ContaUsuario
@@ -16,12 +18,12 @@ namespace usuario
             if (buscarUsuario(usuario)) return false;
             if (banco.criarUsuario(@usuario, @palavra))
             {
-                System.Console.WriteLine("Usuario criado com sucesso!");
+                Registro.escreverRegistro("ContaUsuario", "CriarUsuario", 201, $"Usuário {usuario} criado com sucesso!");
                 return true;
             }
             else
             {
-                System.Console.WriteLine("Criação do usuario falhou!");
+                Registro.escreverRegistro("ContaUsuario", "CriarUsuario", 400, $"Usuário {usuario} falhou na criação!");
                 return false;
             }
         }
@@ -30,12 +32,12 @@ namespace usuario
             if (!verificarse.validoUsuario(usuario)) return false;
             if (banco.existeUsuario(usuario))
             {
-                System.Console.WriteLine($"O usuário {usuario} sim foi encontrado!");
+                Registro.escreverRegistro("ContaUsuario", "CriarUsuario", 200, $"O usuário {usuario} foi sim encontrado!");
                 return false;
             }
             else
             {
-                System.Console.WriteLine($"O usuário {usuario} não foi encontrado!");
+                Registro.escreverRegistro("ContaUsuario", "CriarUsuario", 404, $"O usuário {usuario} não foi encontrado!");
                 return true;
             }
         }
@@ -43,7 +45,16 @@ namespace usuario
         {
             if (!verificarse.validoUsuario(usuario)) return false;
             if (!verificarse.validoPalavra(palavra)) return false;
-            return true;
+            if (banco.logarUsuario(@usuario, @palavra))
+            {
+                Registro.escreverRegistro("ContaUsuario", "logarUsuario", 200, $"O usuario {usuario} logou com sucesso!");
+                return true;
+            }
+            else
+            {
+                Registro.escreverRegistro("ContaUsuario", "logarUsuario", 400, $"O usuario {usuario} falhou em logar!");
+                return false;
+            }
         }
     }
 }
